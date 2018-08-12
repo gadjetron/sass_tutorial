@@ -1,0 +1,236 @@
+/*
+    CONTROL DIRECTIVES AND EXPRESSIONS
+*/
+
+/*
+    @if, @else if, @else directives
+*/
+
+p {
+    $width: 20px;
+
+    @if $width < 20px {
+        border-width: 1px;
+    }
+    @else if $width == 20px{
+        border-width: 2px;
+    }
+    @else {
+        border-width: 3px;
+    }
+}
+
+/*
+    @for directive
+*/
+
+/* 'from 1 to 3' (without 3 ) */
+@for $i from 1 to 3 {
+    item-#{$i}x {
+        font-size: #{$i}px;
+    }
+}
+
+/* 'from 3 through 5' (with 5) */
+@for $j from 3 through 5 {
+    item-#{$j}x {
+        font-size: #{$j}px;
+    }
+}
+
+/*
+    @each directive
+
+    has the form
+
+    @each $var in <list or map>
+*/
+
+/*
+    @each with list
+*/
+@each $animal in puma, tiger, cat, dog {
+    icon-#{$animal} {
+        background-image: url('/images/#{$animal}.png');
+    }
+}
+
+/*
+    @each with multiple assignment
+*/
+@each $photo, $zoom in (john, 2),
+                       (bruce, 4) {
+    icon-#{$photo}-#{$zoom}x {
+        background-image: url('/images/#{$photo}.png');
+    }
+}
+
+/*
+    @each with map
+*/
+
+@each $header, $size in (h1: 2em, h2: 1.5em, h3: 1.2em) {
+    #{$header} {
+        font-size: $size;
+    }
+}
+
+/*
+    @while directive
+*/
+
+$i: 6;
+
+@while $i > 0 {
+  .item-#{$i} { width: 2em * $i; }
+
+  $i: $i - 2;
+}
+
+/*
+    @mixin directive
+*/
+
+/* without arguments */
+@mixin set-thin-border {
+    border-width: 1px;
+}
+
+p {
+    @include set-thin-border();
+}
+
+/* with arguments */
+@mixin add-border ($width, $style, $color){
+    border: $width $style $color;
+}
+
+p {
+    @include add-border(1px, red, solid);
+}
+
+/* with default values for arguments */
+@mixin add-border ($width: 1px,
+                   $style: solid,
+                   $color: black){
+    border: $width $style $color;
+}
+
+.with-width {
+    @include add-border(2px);
+}
+.with-width-and-style {
+    @include add-border(2px, dashed);
+}
+.with-width-style-and-color {
+    @include add-border(2px, solid, red);
+}
+
+/* using mixin with keyword arguments */
+.keyword-arguments {
+    @include add-border($width: 1px,
+                        $style: dotted,
+                        $color: cyan);
+}
+
+/* variable count of args of mixin */
+
+@mixin box-shadow($shadows...) {
+    -moz-box-shadow: $shadows;
+    -webkit-box-shadow: $shadows;
+    box-shadow: $shadows;
+}
+
+.shadows {
+    @include box-shadow(0px 4px 5px #666, 2px 6px 10px #999);
+}
+
+@mixin colors($text, $background, $border) {
+    color: $text;
+    background-color: $background;
+    border-color: $border;
+}
+
+$values: #ff0000, #00ff00, #0000ff;
+.primary {
+    @include colors($values...);
+}
+
+$value-map: (text: #00ff00, background: #0000ff, border: #ff0000);
+.secondary {
+    @include colors($value-map...);
+}
+
+/*
+    You can pass both an argument list and a map
+    as long as the list comes before the map,
+    as in
+
+        @include colors($list..., $map...).
+*/
+
+/* mixin with parent reference */
+
+@mixin clearfix {
+  display: inline-block;
+  &:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+  }
+  & .mini-block { height: 10px }
+}
+
+p{
+    @include clearfix();
+}
+
+/*
+    cannot be done on top level of document
+    if mixin contain parent reference
+    or define any property
+
+    @include clearfix();
+
+    Mixins that only define descendent selectors
+    can be safely mixed into the top most level
+    of a document.
+*/
+
+/* compound mixin */
+
+@mixin compound-mixin {
+    @include add-border(1px, dashed, yellow);
+}
+
+.compound {
+    @include compound-mixin();
+}
+
+/* passing content blocks to mixin*/
+
+@mixin apply-to-ie6-only {
+  p {
+    @content;
+  }
+}
+@include apply-to-ie6-only {
+  #logo {
+    background-image: url('logo.gif');
+  }
+}
+
+/* @function directive */
+
+$grid-width: 40px;
+$gutter-width: 10px;
+
+@function grid-width($n) {
+    @return $n * $grid-width + ($n - 1) * $gutter-width;
+}
+
+#sidebar {
+    width: grid-width(5); // or grid-width($n: 5)
+}

@@ -1,0 +1,821 @@
+/*
+    CONTROL DIRECTIVES AND EXPRESSIONS
+*/
+/*
+    @if, @else if, @else directives
+*/
+p {
+  border-width: 2px;
+}
+
+/*
+    @for directive
+*/
+/* 'from 1 to 3' (without 3 ) */
+item-1x {
+  font-size: 1px;
+}
+
+item-2x {
+  font-size: 2px;
+}
+
+/* 'from 3 through 5' (with 5) */
+item-3x {
+  font-size: 3px;
+}
+
+item-4x {
+  font-size: 4px;
+}
+
+item-5x {
+  font-size: 5px;
+}
+
+/*
+    @each directive
+
+    has the form
+
+    @each $var in <list or map>
+*/
+/*
+    @each with list
+*/
+icon-puma {
+  background-image: url("/images/puma.png");
+}
+
+icon-tiger {
+  background-image: url("/images/tiger.png");
+}
+
+icon-cat {
+  background-image: url("/images/cat.png");
+}
+
+icon-dog {
+  background-image: url("/images/dog.png");
+}
+
+/*
+    @each with multiple assignment
+*/
+icon-john-2x {
+  background-image: url("/images/john.png");
+}
+
+icon-bruce-4x {
+  background-image: url("/images/bruce.png");
+}
+
+/*
+    @each with map
+*/
+h1 {
+  font-size: 2em;
+}
+
+h2 {
+  font-size: 1.5em;
+}
+
+h3 {
+  font-size: 1.2em;
+}
+
+/*
+    @while directive
+*/
+.item-6 {
+  width: 12em;
+}
+
+.item-4 {
+  width: 8em;
+}
+
+.item-2 {
+  width: 4em;
+}
+
+/*
+    @mixin directive
+*/
+/* without arguments */
+p {
+  border-width: 1px;
+}
+
+/* with arguments */
+p {
+  border: 1px red solid;
+}
+
+/* with default values for arguments */
+.with-width {
+  border: 2px solid black;
+}
+
+.with-width-and-style {
+  border: 2px dashed black;
+}
+
+.with-width-style-and-color {
+  border: 2px solid red;
+}
+
+/* using mixin with keyword arguments */
+.keyword-arguments {
+  border: 1px dotted cyan;
+}
+
+/* variable count of args of mixin */
+.shadows {
+  -moz-box-shadow: 0px 4px 5px #666, 2px 6px 10px #999;
+  -webkit-box-shadow: 0px 4px 5px #666, 2px 6px 10px #999;
+  box-shadow: 0px 4px 5px #666, 2px 6px 10px #999;
+}
+
+.primary {
+  color: #ff0000;
+  background-color: #00ff00;
+  border-color: #0000ff;
+}
+
+.secondary {
+  color: #00ff00;
+  background-color: #0000ff;
+  border-color: #ff0000;
+}
+
+/*
+    You can pass both an argument list and a map
+    as long as the list comes before the map,
+    as in
+
+        @include colors($list..., $map...).
+*/
+/* mixin with parent reference */
+p {
+  display: inline-block;
+}
+
+p:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+p .mini-block {
+  height: 10px;
+}
+
+/*
+    cannot be done on top level of document
+    if mixin contain parent reference
+    or define any property
+
+    @include clearfix();
+
+    Mixins that only define descendent selectors
+    can be safely mixed into the top most level
+    of a document.
+*/
+/* compound mixin */
+.compound {
+  border: 1px dashed yellow;
+}
+
+/* passing content blocks to mixin*/
+p #logo {
+  background-image: url("logo.gif");
+}
+
+/* @function directive */
+#sidebar {
+  width: 240px;
+}
+
+/*
+    FUNCTIONS
+*/
+/* abs */
+p {
+  font-size: 10px;
+}
+
+/* append($list, $val, $separator:auto) */
+/*
+    append(10px 20px, 30px) => 10px 20px 30px
+    append((blue, red), green) => blue, red, green
+    append(10px 20px, 30px 40px) => 10px 20px (30px 40px)
+    append(10px, 20px, comma) => 10px, 20px
+    append((blue, red), green, space) => blue red green
+*/
+/* call($function, $args...) */
+/*
+    call(rgb, 10, 100, 255) => #0a64ff
+
+    $fn: nth;
+    call($fn, (a b c), 2) => b
+*/
+/* function_exists($name) */
+/*
+    function-exists(lighten) => true
+
+    @function myfunc { @return "something"; }
+    function-exists(myfunc) => true
+*/
+/* if($condition, $if-true, $if-false) */
+/*
+    if(true, 1px, 2px) => 1px
+    if(false, 1px, 2px) => 2px
+*/
+/* index($list, $value) */
+/*
+    index(1px solid red, solid) => 2
+    index(1px solid red, dashed) => null
+    index((width: 10px, height: 20px), (height 20px)) => 2
+*/
+/* is_bracketed($list) */
+/*
+    is-bracketed(1px 2px 3px) => false
+    is-bracketed([1px, 2px, 3px]) => true
+*/
+/* is_superselector($super, $sub) */
+/*
+    is-superselector(".foo", ".foo.bar") => true
+    is-superselector(".foo.bar", ".foo") => false
+    is-superselector(".bar", ".foo .bar") => true
+    is-superselector(".foo .bar", ".bar") => false
+*/
+/* join($list1, $list2, $separator:auto, $bracketed:auto) */
+/*
+    join(10px 20px, 30px 40px) => 10px 20px 30px 40px
+    join((blue, red), (#abc, #def)) => blue, red, #abc, #def
+    join(10px, 20px) => 10px 20px
+    join(10px, 20px, comma) => 10px, 20px
+    join((blue, red), (#abc, #def), space) => blue red #abc #def
+    join([10px], 20px) => [10px 20px]
+*/
+/* length($list) */
+/*
+    length(10px) => 1
+    length(10px 20px 30px) => 3
+    length((width: 10px, height: 20px)) => 2
+*/
+/* list_separator($list) */
+/*
+    list-separator(1px 2px 3px) => space
+    list-separator(1px, 2px, 3px) => comma
+    list-separator('foo') => space
+*/
+/* map_get($map, $key) */
+/*
+    map-get(("foo": 1, "bar": 2), "foo") => 1
+    map-get(("foo": 1, "bar": 2), "bar") => 2
+    map-get(("foo": 1, "bar": 2), "baz") => null
+*/
+/* map_has_key($map, $key) */
+/*
+    map-has-key(("foo": 1, "bar": 2), "foo") => true
+    map-has-key(("foo": 1, "bar": 2), "baz") => false
+*/
+/* map_keys($map) */
+/*
+    map-keys(("foo": 1, "bar": 2)) => "foo", "bar"
+*/
+/* map_merge($map1, $map2) */
+/*
+    map-merge(("foo": 1), ("bar": 2)) => ("foo": 1, "bar": 2)
+    map-merge(("foo": 1, "bar": 2), ("bar": 3)) => ("foo": 1, "bar": 3)
+*/
+/* map_remove($map, $keys...) */
+/*
+    map-remove(("foo": 1, "bar": 2), "bar") => ("foo": 1)
+    map-remove(("foo": 1, "bar": 2, "baz": 3), "bar", "baz") => ("foo": 1)
+    map-remove(("foo": 1, "bar": 2), "baz") => ("foo": 1, "bar": 2)
+*/
+/* map_values($map) */
+/*
+    map-values(("foo": 1, "bar": 2)) => 1, 2
+    map-values(("foo": 1, "bar": 2, "baz": 1)) => 1, 2, 1
+*/
+/* nth($list, $n) */
+/*
+    nth(10px 20px 30px, 1) => 10px
+    nth((Helvetica, Arial, sans-serif), 3) => sans-serif
+    nth((width: 10px, length: 20px), 2) => length, 20px
+*/
+/* percentage($number) */
+/*
+    percentage(0.2) => 20%
+    percentage(100px / 50px) => 200%
+*/
+/* quote($string) */
+/*
+    quote("foo") => "foo"
+    quote(foo) => "foo"
+*/
+/* rgb($red, $green, $blue) */
+/* rgba($red, $green, $blue, $alpha) rgba($color, $alpha) */
+/* selector_append($selectors...) */
+/*
+    selector-append(".foo", ".bar", ".baz") => .foo.bar.baz
+    selector-append(".a .foo", ".b .bar") => "a .foo.b .bar"
+    selector-append(".foo", "-suffix") => ".foo-suffix"
+*/
+/* set-nth($list, $n, $value)  */
+/*
+    set-nth($list: 10px 20px 30px, $n: 2, $value: -20px) => 10px -20px 30px
+*/
+/* str_index($string, $substring) */
+/*
+    str-index(abcd, a)  => 1
+    str-index(abcd, ab) => 1
+    str-index(abcd, X)  => null
+    str-index(abcd, c)  => 3
+*/
+/* str_insert($string, $insert, $index) */
+/*
+    str-insert("abcd", "X", 1) => "Xabcd"
+    str-insert("abcd", "X", 4) => "abcXd"
+    str-insert("abcd", "X", 5) => "abcdX"
+*/
+/* str_length($string) */
+/* str-length("foo") => 3 */
+/* str_slice($string, $start-at, $end-at:-1) */
+/*
+    str-slice("abcd", 2, 3)   => "bc"
+    str-slice("abcd", 2)      => "bcd"
+    str-slice("abcd", -3, -2) => "bc"
+    str-slice("abcd", 2, -2)  => "bc"
+*/
+/* to_lower_case($string) */
+/* to_upper_case($string) */
+/* type_of($value) */
+/*
+    type-of(100px)  => number
+    type-of(asdf)   => string
+    type-of("asdf") => string
+    type-of(true)   => bool
+    type-of(#fff)   => color
+    type-of(blue)   => color
+    type-of(null)   => null
+    type-of(a b c)  => list
+    type-of((a: 1, b: 2)) => map
+    type-of(get-function("foo")) => function
+*/
+/* unit($number) */
+/*
+    unit(100) => ""
+    unit(100px) => "px"
+    unit(3em) => "em"
+    unit(10px * 5em) => "em*px"
+    unit(10px * 5em / 30cm / 1rem) => "em*px/cm*rem"
+*/
+/* unitless($number) */
+/*
+    unitless(100) => true
+    unitless(100px) => false
+*/
+/* unquote($string) */
+/*
+    unquote("foo") => foo
+    unquote(foo) => foo
+*/
+/* variable_exists($name) */
+/*
+    $a-false-value: false;
+
+    variable-exists(a-false-value) => true
+    variable-exists(a-null-value) => true
+    variable-exists(nonexistent) => false
+*/
+/* zip($lists...) */
+/*
+    zip(1px 1px 3px, solid dashed solid, red green blue)
+    => 1px solid red, 1px dashed green, 3px solid blue
+*/
+
+/*
+  NESTING
+*/
+#main p {
+  color: #00ff00;
+  width: 97%;
+}
+
+#main p .redbox {
+  background-color: #ff0000;
+  color: #000000;
+}
+
+#main {
+  width: 97%;
+}
+
+#main p, #main div {
+  font-size: 2em;
+}
+
+#main p a, #main div a {
+  font-weight: bold;
+}
+
+#main pre {
+  font-size: 3em;
+}
+
+/* Parent selector */
+a {
+  font-weight: bold;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+body.firefox a {
+  font-weight: normal;
+}
+
+#main {
+  color: black;
+}
+
+#main a {
+  font-weight: bold;
+}
+
+#main a:hover {
+  color: red;
+}
+
+#main {
+  color: black;
+}
+
+#main-sidebar {
+  border: 1px solid;
+}
+
+/* Nested properties */
+.funky {
+  font-family: fantasy;
+  font-size: 30em;
+  font-weight: bold;
+}
+
+/* This comment is
+ * several lines long.
+ * since it uses the CSS comment syntax,
+ * it will appear in the CSS output. */
+body {
+  color: black;
+}
+
+a {
+  color: green;
+}
+
+/* Variables */
+/*
+    Variables are only available within the level of nested selectors
+    where they're defined. If they're defined outside of any nested selectors,
+    they're available everywhere. They can also be defined with the !global flag,
+    in which case they're also available everywhere.
+*/
+#main {
+  width: 5em;
+}
+
+#main {
+  width: 5em;
+}
+
+#sidebar {
+  width: 5em;
+}
+
+/* String interpolation */
+#sidebar {
+  width: 5em;
+}
+
+#sidebar .left-block {
+  width: 2.5em;
+}
+
+p.foo {
+  border-color: blue;
+}
+
+p {
+  font-size: 12px;
+}
+
+/* Variable default */
+/*
+    You can assign to variables if they aren't already assigned
+    by adding the !default flag to the end of the value.
+    This means that if the variable has already been assigned to,
+    it won't be re-assigned, but if it doesn't have a value yet,
+    it will be given one.
+
+    Variables with null values are treated as unassigned by !default:
+
+ */
+#main {
+  content: "First content";
+}
+
+#main {
+  content: "First time reference";
+}
+
+#main {
+  content: "Non-null content";
+}
+
+/*
+    RULES AND DIRECTIVES
+*/
+/* @import "nesting" or @import "nesting.scss"
+
+@import "foo.css";
+@import "foo" screen;
+@import "http://foo.com/bar";
+@import url(foo);
+
+@import "rounded-corners", "text-shadow";
+*/
+/*
+    Imports may contain interpolation, but only with certain restrictions.
+    It's not possible to dynamically import a Sass file based on a variable;
+    interpolation is only for CSS imports.
+    As such, it only works with url() imports.
+
+
+*/
+@import url("http://fonts.googleapis.com/css?family=Droid+Sans");
+/* Partials  */
+/*
+    If you have a SCSS or Sass file that you want to import
+    but don't want to compile to a CSS file, you can add an underscore
+    to the beginning of the filename. This will tell Sass not to compile it
+    to a normal CSS file. You can then import these files
+    without using the underscore.
+
+    For example, you might have _colors.scss.
+    Then no _colors.css file would be created, and you can do
+
+        @import "colors";
+
+    and _colors.scss would be imported.
+
+    Note that you may not include a partial and a non-partial
+    with the same name in the same directory. For example, '_colors.scss'
+    may not exist alongside 'colors.scss'.
+ */
+/*
+    Nested imports
+ */
+/*
+    For example, if example.scss contains
+
+    .example {
+    color: red;
+    }
+
+    then
+
+    #main {
+        @import "example";
+    }
+
+    would compile to
+
+    #main .example {
+        color: red;
+    }
+
+    Directives that are only allowed at the base level of a document,
+    like @mixin or @charset, are not allowed in files
+    that are @imported in a nested context.
+
+    It's not possible to nest @import within mixins or control directives.
+ */
+/*
+    @media directive
+*/
+/*
+    @media directives in Sass behave just like they do in plain CSS,
+    with one extra capability: they can be nested in CSS rules.
+    If a @media directive appears within a CSS rule,
+    it will be bubbled up to the top level of the stylesheet,
+    putting all the selectors on the way inside the rule.
+    This makes it easy to add media-specific styles
+    without having to repeat selectors or break the flow of the stylesheet.
+
+    .sidebar {
+        width: 300px;
+        @media screen and (orientation: landscape) {
+            width: 500px;
+        }
+    }
+
+    is compiled to:
+
+    .sidebar {
+        width: 300px;
+    }
+
+    @media screen and (orientation: landscape) {
+        .sidebar {
+            width: 500px;
+        }
+    }
+
+    @media queries can also be nested within one another.
+    The queries will then be combined using the 'and' operator.
+
+    @media screen {
+        .sidebar {
+            @media (orientation: landscape) {
+                width: 500px;
+            }
+        }
+    }
+
+    is compiled to:
+
+    @media screen and (orientation: landscape) {
+        .sidebar {
+            width: 500px;
+        }
+    }
+*/
+/*
+    @media queries can contain SassScript expressions
+    (including variables, functions, and operators)
+    in place of the feature names and feature values.
+ */
+@media screen and (-webkit-min-device-pixel-ratio: 1.5) {
+  .sidebar {
+    width: 500px;
+  }
+}
+
+/* @extend directive */
+/*
+    The @extend directive tell Sass that one selector
+    should inherit the styles of another
+
+        .error {
+            border: 1px #f00;
+            background-color: #fdd;
+        }
+        .seriousError {
+            @extend .error;
+            border-width: 3px;
+        }
+        is compiled to:
+
+        .error, .seriousError {
+            border: 1px #f00;
+            background-color: #fdd;
+        }
+
+        .seriousError {
+            border-width: 3px;
+        }
+
+        This means that all styles defined for .error
+        are also applied to .seriousError, in addition to the styles
+        specific to .seriousError. In effect, every element
+        with class .seriousError also has class .error.
+
+        Other rules that use .error will work for .seriousError as well.
+        For example, if we have special styles for errors caused by hackers:
+
+        .error.intrusion {
+            background-image: url("/image/hacked.png");
+        }
+
+        Then
+
+            <div class="seriousError intrusion">
+
+        will have the hacked.png background image as well.
+ */
+/*
+    @extend works by inserting the extending selector (e.g. .seriousError)
+    anywhere in the stylesheet that the extended selector (.e.g .error) appears.
+ */
+.error, .seriousError, .criticalError {
+  border: 1px #f00;
+  background-color: #fdd;
+}
+
+.error.intrusion, .intrusion.seriousError, .intrusion.criticalError {
+  background-image: url("/image/hacked.png");
+}
+
+.seriousError, .criticalError {
+  border-width: 3px;
+}
+
+/*
+    Extending Complex Selectors
+ */
+a:hover, .hoverlink, #fake-links .link:hover {
+  text-decoration: underline;
+}
+
+.comment a.user:hover, .comment .user.hoverlink, .comment #fake-links .user.link:hover, #fake-links .comment .user.link:hover {
+  font-weight: bold;
+}
+
+/*
+    Multiple extendes
+*/
+.error, .seriousError, .criticalError {
+  border: 1px #f00;
+  background-color: #fdd;
+}
+
+.attention, .seriousError, .criticalError {
+  font-size: 3em;
+  background-color: #ff0;
+}
+
+.seriousError, .criticalError {
+  border-width: 3px;
+}
+
+/*
+    styles defined later in the document take precedence:
+    .seriousError has background color #ff0 rather than #fdd,
+    since .attention is defined later than .error.
+*/
+/*
+    Multiple extends can also be written using
+    a comma-separated list of selectors.
+    For example,
+
+        @extend .error, .attention
+
+        is the same as
+
+        @extend .error; @extend .attention.
+*/
+/*
+    Chaining Extends
+*/
+.error, .seriousError, .criticalError {
+  border: 1px #f00;
+  background-color: #fdd;
+}
+
+.seriousError, .criticalError {
+  border-width: 3px;
+}
+
+.criticalError {
+  position: fixed;
+  top: 10%;
+  bottom: 10%;
+  left: 10%;
+  right: 10%;
+}
+
+/*
+    Selector Sequences
+*/
+/*
+    Selector sequences, such as .foo .bar or .foo + .bar,
+    currently can't be extended.
+    However, it is possible for nested selectors themselves to use @extend.
+ */
+a, #fake-links .link {
+  color: blue;
+}
+
+a:hover, .hoverlink, #fake-links .link:hover {
+  text-decoration: underline;
+}
+
+/*
+    @error
+*/
+a, #fake-links .link {
+  position: relative;
+  left: 2px;
+  top: 2px;
+}

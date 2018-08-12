@@ -1,0 +1,166 @@
+/*
+    CONTROL DIRECTIVES AND EXPRESSIONS
+*/
+/*
+    @if, @else if, @else directives
+*/
+p {
+  border-width: 2px; }
+
+/*
+    @for directive
+*/
+/* 'from 1 to 3' (without 3 ) */
+item-1x {
+  font-size: 1px; }
+
+item-2x {
+  font-size: 2px; }
+
+/* 'from 3 through 5' (with 5) */
+item-3x {
+  font-size: 3px; }
+
+item-4x {
+  font-size: 4px; }
+
+item-5x {
+  font-size: 5px; }
+
+/*
+    @each directive
+
+    has the form
+
+    @each $var in <list or map>
+*/
+/*
+    @each with list
+*/
+icon-puma {
+  background-image: url("/images/puma.png"); }
+
+icon-tiger {
+  background-image: url("/images/tiger.png"); }
+
+icon-cat {
+  background-image: url("/images/cat.png"); }
+
+icon-dog {
+  background-image: url("/images/dog.png"); }
+
+/*
+    @each with multiple assignment
+*/
+icon-john-2x {
+  background-image: url("/images/john.png"); }
+
+icon-bruce-4x {
+  background-image: url("/images/bruce.png"); }
+
+/*
+    @each with map
+*/
+h1 {
+  font-size: 2em; }
+
+h2 {
+  font-size: 1.5em; }
+
+h3 {
+  font-size: 1.2em; }
+
+/*
+    @while directive
+*/
+.item-6 {
+  width: 12em; }
+
+.item-4 {
+  width: 8em; }
+
+.item-2 {
+  width: 4em; }
+
+/*
+    @mixin directive
+*/
+/* without arguments */
+p {
+  border-width: 1px; }
+
+/* with arguments */
+p {
+  border: 1px red solid; }
+
+/* with default values for arguments */
+.with-width {
+  border: 2px solid black; }
+
+.with-width-and-style {
+  border: 2px dashed black; }
+
+.with-width-style-and-color {
+  border: 2px solid red; }
+
+/* using mixin with keyword arguments */
+.keyword-arguments {
+  border: 1px dotted cyan; }
+
+/* variable count of args of mixin */
+.shadows {
+  -moz-box-shadow: 0px 4px 5px #666, 2px 6px 10px #999;
+  -webkit-box-shadow: 0px 4px 5px #666, 2px 6px 10px #999;
+  box-shadow: 0px 4px 5px #666, 2px 6px 10px #999; }
+
+.primary {
+  color: #ff0000;
+  background-color: #00ff00;
+  border-color: #0000ff; }
+
+.secondary {
+  color: #00ff00;
+  background-color: #0000ff;
+  border-color: #ff0000; }
+
+/*
+    You can pass both an argument list and a map
+    as long as the list comes before the map,
+    as in
+
+        @include colors($list..., $map...).
+*/
+/* mixin with parent reference */
+p {
+  display: inline-block; }
+  p:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden; }
+  p .mini-block {
+    height: 10px; }
+
+/*
+    cannot be done on top level of document
+    if mixin contain parent reference
+    or define any property
+
+    @include clearfix();
+
+    Mixins that only define descendent selectors
+    can be safely mixed into the top most level
+    of a document.
+*/
+/* compound mixin */
+.compound {
+  border: 1px dashed yellow; }
+
+/* passing content blocks to mixin*/
+p #logo {
+  background-image: url("logo.gif"); }
+
+/* @function directive */
+#sidebar {
+  width: 240px; }

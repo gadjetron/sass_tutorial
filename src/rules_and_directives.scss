@@ -1,0 +1,415 @@
+/*
+    RULES AND DIRECTIVES
+*/
+
+/* @import "nesting" or @import "nesting.scss"
+
+@import "foo.css";
+@import "foo" screen;
+@import "http://foo.com/bar";
+@import url(foo);
+
+@import "rounded-corners", "text-shadow";
+*/
+
+/*
+    Imports may contain interpolation, but only with certain restrictions.
+    It's not possible to dynamically import a Sass file based on a variable;
+    interpolation is only for CSS imports.
+    As such, it only works with url() imports.
+
+
+*/
+
+$family: unquote("Droid+Sans");
+@import url("http://fonts.googleapis.com/css?family=#{$family}");
+
+/* Partials  */
+/*
+    If you have a SCSS or Sass file that you want to import
+    but don't want to compile to a CSS file, you can add an underscore
+    to the beginning of the filename. This will tell Sass not to compile it
+    to a normal CSS file. You can then import these files
+    without using the underscore.
+
+    For example, you might have _colors.scss.
+    Then no _colors.css file would be created, and you can do
+
+        @import "colors";
+
+    and _colors.scss would be imported.
+
+    Note that you may not include a partial and a non-partial
+    with the same name in the same directory. For example, '_colors.scss'
+    may not exist alongside 'colors.scss'.
+ */
+
+/*
+    Nested imports
+ */
+
+/*
+    For example, if example.scss contains
+
+    .example {
+    color: red;
+    }
+
+    then
+
+    #main {
+        @import "example";
+    }
+
+    would compile to
+
+    #main .example {
+        color: red;
+    }
+
+    Directives that are only allowed at the base level of a document,
+    like @mixin or @charset, are not allowed in files
+    that are @imported in a nested context.
+
+    It's not possible to nest @import within mixins or control directives.
+ */
+
+/*
+    @media directive
+*/
+
+/*
+    @media directives in Sass behave just like they do in plain CSS,
+    with one extra capability: they can be nested in CSS rules.
+    If a @media directive appears within a CSS rule,
+    it will be bubbled up to the top level of the stylesheet,
+    putting all the selectors on the way inside the rule.
+    This makes it easy to add media-specific styles
+    without having to repeat selectors or break the flow of the stylesheet.
+
+    .sidebar {
+        width: 300px;
+        @media screen and (orientation: landscape) {
+            width: 500px;
+        }
+    }
+
+    is compiled to:
+
+    .sidebar {
+        width: 300px;
+    }
+
+    @media screen and (orientation: landscape) {
+        .sidebar {
+            width: 500px;
+        }
+    }
+
+    @media queries can also be nested within one another.
+    The queries will then be combined using the 'and' operator.
+
+    @media screen {
+        .sidebar {
+            @media (orientation: landscape) {
+                width: 500px;
+            }
+        }
+    }
+
+    is compiled to:
+
+    @media screen and (orientation: landscape) {
+        .sidebar {
+            width: 500px;
+        }
+    }
+*/
+
+/*
+    @media queries can contain SassScript expressions
+    (including variables, functions, and operators)
+    in place of the feature names and feature values.
+ */
+
+$media: screen;
+$feature: -webkit-min-device-pixel-ratio;
+$value: 1.5;
+
+@media #{$media} and ($feature: $value) {
+    .sidebar {
+        width: 500px;
+    }
+}
+
+// is compiled to:
+
+// @media screen and (-webkit-min-device-pixel-ratio: 1.5) {
+//     .sidebar {
+//         width: 500px;
+//     }
+// }
+
+/* @extend directive */
+/*
+    The @extend directive tell Sass that one selector
+    should inherit the styles of another
+
+        .error {
+            border: 1px #f00;
+            background-color: #fdd;
+        }
+        .seriousError {
+            @extend .error;
+            border-width: 3px;
+        }
+        is compiled to:
+
+        .error, .seriousError {
+            border: 1px #f00;
+            background-color: #fdd;
+        }
+
+        .seriousError {
+            border-width: 3px;
+        }
+
+        This means that all styles defined for .error
+        are also applied to .seriousError, in addition to the styles
+        specific to .seriousError. In effect, every element
+        with class .seriousError also has class .error.
+
+        Other rules that use .error will work for .seriousError as well.
+        For example, if we have special styles for errors caused by hackers:
+
+        .error.intrusion {
+            background-image: url("/image/hacked.png");
+        }
+
+        Then
+
+            <div class="seriousError intrusion">
+
+        will have the hacked.png background image as well.
+ */
+
+/*
+    @extend works by inserting the extending selector (e.g. .seriousError)
+    anywhere in the stylesheet that the extended selector (.e.g .error) appears.
+ */
+
+.error {
+    border: 1px #f00;
+    background-color: #fdd;
+}
+.error.intrusion {
+    background-image: url("/image/hacked.png");
+}
+.seriousError {
+    @extend .error;
+    border-width: 3px;
+}
+
+// is compiled to
+
+// .error, .seriousError {
+//   border: 1px #f00;
+//   background-color: #fdd; }
+
+// .error.intrusion, .seriousError.intrusion {
+//   background-image: url("/image/hacked.png"); }
+
+// .seriousError {
+//   border-width: 3px; }
+
+/*
+    Extending Complex Selectors
+ */
+
+.hoverlink {
+    @extend a:hover;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+// is compiled to:
+
+// a:hover, .hoverlink {
+//   text-decoration: underline; }
+
+.hoverlink {
+    @extend a:hover;
+}
+.comment a.user:hover {
+    font-weight: bold;
+}
+
+// is compiled to:
+
+// .comment a.user:hover, .comment .user.hoverlink {
+//   font-weight: bold; }
+
+/*
+    Multiple extendes
+*/
+
+.error {
+    border: 1px #f00;
+    background-color: #fdd;
+}
+.attention {
+    font-size: 3em;
+    background-color: #ff0;
+}
+.seriousError {
+    @extend .error;
+    @extend .attention;
+    border-width: 3px;
+}
+
+// is compiled to:
+
+// .error, .seriousError {
+//   border: 1px #f00;
+//   background-color: #fdd; }
+
+// .attention, .seriousError {
+//   font-size: 3em;
+//   background-color: #ff0; }
+
+// .seriousError {
+//   border-width: 3px; }
+
+/*
+    styles defined later in the document take precedence:
+    .seriousError has background color #ff0 rather than #fdd,
+    since .attention is defined later than .error.
+*/
+
+/*
+    Multiple extends can also be written using
+    a comma-separated list of selectors.
+    For example,
+
+        @extend .error, .attention
+
+        is the same as
+
+        @extend .error; @extend .attention.
+*/
+
+/*
+    Chaining Extends
+*/
+
+.error {
+  border: 1px #f00;
+  background-color: #fdd;
+}
+.seriousError {
+  @extend .error;
+  border-width: 3px;
+}
+.criticalError {
+  @extend .seriousError;
+  position: fixed;
+  top: 10%;
+  bottom: 10%;
+  left: 10%;
+  right: 10%;
+}
+
+// compiled to
+
+// .error, .seriousError, .criticalError {
+//   border: 1px #f00;
+//   background-color: #fdd; }
+
+// .seriousError, .criticalError {
+//   border-width: 3px; }
+
+// .criticalError {
+//   position: fixed;
+//   top: 10%;
+//   bottom: 10%;
+//   left: 10%;
+//   right: 10%; }
+
+/*
+    Selector Sequences
+*/
+/*
+    Selector sequences, such as .foo .bar or .foo + .bar,
+    currently can't be extended.
+    However, it is possible for nested selectors themselves to use @extend.
+ */
+
+#fake-links .link {
+  @extend a;
+}
+
+a {
+  color: blue;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// is compiled to
+
+// a, #fake-links .link {
+//     color: blue; }
+// a:hover, #fake-links .link:hover {
+//     text-decoration: underline; }
+
+
+// @debug
+
+// @debug 10em + 12em;
+
+// outputs:
+
+// Line 1 DEBUG: 22em
+
+
+// @warn
+
+@mixin adjust-location($x, $y) {
+    @if unitless($x) {
+        @warn "Assuming #{$x} to be in pixels";
+
+        $x: 1px * $x;
+    }
+
+    @if unitless($y) {
+        @warn "Assuming #{$y} to be in pixels";
+
+        $y: 1px * $y;
+    }
+
+    position: relative; left: $x; top: $y;
+}
+
+// a{
+//     @include adjust-location(2, 2px);
+// }
+
+/*
+    @error
+*/
+@mixin adjust-location($x, $y) {
+  @if unitless($x) {
+    @error "$x may not be unitless, was #{$x}.";
+  }
+  @if unitless($y) {
+    @error "$y may not be unitless, was #{$y}.";
+  }
+  position: relative;
+  left: $x;
+  top: $y;
+}
+
+a{
+    @include adjust-location(2px, 2px);
+}

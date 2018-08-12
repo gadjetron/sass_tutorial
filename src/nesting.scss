@@ -1,0 +1,147 @@
+/*
+  NESTING
+*/
+
+#main p {
+  color: #00ff00;
+  width: 97%;
+
+  .redbox {
+    background-color: #ff0000;
+    color: #000000;
+  }
+}
+
+#main {
+  width: 97%;
+
+  p, div {
+    font-size: 2em;
+    a { font-weight: bold; }
+  }
+
+  pre { font-size: 3em; }
+}
+
+/* Parent selector */
+a {
+  font-weight: bold;
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+  body.firefox & { font-weight: normal; }
+}
+
+#main {
+  color: black;
+  a {
+    font-weight: bold;
+    &:hover { color: red; }
+  }
+}
+
+#main {
+  color: black;
+  &-sidebar { border: 1px solid; }
+}
+
+/* Nested properties */
+.funky {
+  font: {
+    family: fantasy;
+    size: 30em;
+    weight: bold;
+  }
+}
+
+/* This comment is
+ * several lines long.
+ * since it uses the CSS comment syntax,
+ * it will appear in the CSS output. */
+body { color: black; }
+
+// These comments are only one line long each.
+// They won't appear in the CSS output,
+// since they use the single-line comment syntax.
+a { color: green; }
+
+/* Variables */
+/*
+    Variables are only available within the level of nested selectors
+    where they're defined. If they're defined outside of any nested selectors,
+    they're available everywhere. They can also be defined with the !global flag,
+    in which case they're also available everywhere.
+*/
+// Can also be used as $block_width
+$block-width: 5em;
+
+#main {
+  width: $block-width;
+}
+
+#main {
+  $block-width: 5em !global;
+  width: $block-width; // can
+}
+
+#sidebar {
+  width: $block-width;
+}
+
+// Map variable
+$map: (key1: value1, key2: value2, key3: value3);
+
+
+/* String interpolation */
+
+$block_name: "left";
+
+#sidebar {
+  width: $block-width;
+
+  .#{$block_name}-block{
+    width: $block-width / 2;
+  }
+}
+
+$name: foo;
+$attr: border;
+
+p.#{$name} {
+  #{$attr}-color: blue;
+}
+
+p {
+  $font-size: 12px;
+  $line-height: 30px;
+  font-size: #{$font-size};
+}
+
+/* Variable default */
+/*
+    You can assign to variables if they aren't already assigned
+    by adding the !default flag to the end of the value.
+    This means that if the variable has already been assigned to,
+    it won't be re-assigned, but if it doesn't have a value yet,
+    it will be given one.
+
+    Variables with null values are treated as unassigned by !default:
+
+ */
+$content: "First content";
+$content: "Second content?" !default;
+$new_content: "First time reference" !default;
+
+#main {
+  content: $content;
+}
+#main {
+  content: $new_content;
+}
+
+$content: null;
+$content: "Non-null content" !default;
+
+#main {
+  content: $content;
+}

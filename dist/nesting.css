@@ -1,0 +1,103 @@
+/*
+  NESTING
+*/
+#main p {
+  color: #00ff00;
+  width: 97%; }
+  #main p .redbox {
+    background-color: #ff0000;
+    color: #000000; }
+
+#main {
+  width: 97%; }
+  #main p, #main div {
+    font-size: 2em; }
+    #main p a, #main div a {
+      font-weight: bold; }
+  #main pre {
+    font-size: 3em; }
+
+/* Parent selector */
+a {
+  font-weight: bold;
+  text-decoration: none; }
+  a:hover {
+    text-decoration: underline; }
+  body.firefox a {
+    font-weight: normal; }
+
+#main {
+  color: black; }
+  #main a {
+    font-weight: bold; }
+    #main a:hover {
+      color: red; }
+
+#main {
+  color: black; }
+  #main-sidebar {
+    border: 1px solid; }
+
+/* Nested properties */
+.funky {
+  font-family: fantasy;
+  font-size: 30em;
+  font-weight: bold; }
+
+/* This comment is
+ * several lines long.
+ * since it uses the CSS comment syntax,
+ * it will appear in the CSS output. */
+body {
+  color: black; }
+
+a {
+  color: green; }
+
+/* Variables */
+/*
+    Variables are only available within the level of nested selectors
+    where they're defined. If they're defined outside of any nested selectors,
+    they're available everywhere. They can also be defined with the !global flag,
+    in which case they're also available everywhere.
+*/
+#main {
+  width: 5em; }
+
+#main {
+  width: 5em; }
+
+#sidebar {
+  width: 5em; }
+
+/* String interpolation */
+#sidebar {
+  width: 5em; }
+  #sidebar .left-block {
+    width: 2.5em; }
+
+p.foo {
+  border-color: blue; }
+
+p {
+  font-size: 12px; }
+
+/* Variable default */
+/*
+    You can assign to variables if they aren't already assigned
+    by adding the !default flag to the end of the value.
+    This means that if the variable has already been assigned to,
+    it won't be re-assigned, but if it doesn't have a value yet,
+    it will be given one.
+
+    Variables with null values are treated as unassigned by !default:
+
+ */
+#main {
+  content: "First content"; }
+
+#main {
+  content: "First time reference"; }
+
+#main {
+  content: "Non-null content"; }
